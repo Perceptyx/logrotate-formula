@@ -1,8 +1,10 @@
 # vim: sts=2 ts=2 sw=2 et ai
+
 logrotate:
-  lookup:
-    pkg: logrotate
-    service: crond
+  # default OS values can be overridden in 'lookup' dict
+  #lookup:
+    #pkg: logrotate
+    #service: crond
   default_config:
     weekly: True
     rotate: 52
@@ -10,7 +12,7 @@ logrotate:
     compress: True
     dateext: True
   jobs:
-      /tmp/var/log/mysql/error:
+    /tmp/var/log/mysql/error:
       config:
         - weekly
         - missingok
@@ -45,3 +47,23 @@ logrotate:
         - postrotate
         -   /bin/kill -HUP `cat /var/run/syslogd.pid 2> /dev/null` 2> /dev/null || true
         - endscript
+    nginx:
+      contents: |
+        /var/log/nginx/*.log{
+          weekly
+          missingok
+          compress
+          delaycompress
+          notifempty
+          create 0640 www-data adm
+          sharedscripts
+          prerotate
+            if [ -d /etc/logrotate.d/httpd-prerotate ]; then \
+              run-parts /etc/logrotate.d/httpd-prerotate; \
+            fi \
+          endscript
+          postrotate
+            invoke-rc.d nginx rotate >/dev/null 2>&1
+          endscript
+        }
+

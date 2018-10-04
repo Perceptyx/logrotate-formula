@@ -1,0 +1,10 @@
+name: logrotate
+title: Logrotate Profile
+maintainer: Eric Veiras Galisson
+copyright: Eric Veiras Galisson
+copyright_email: eric AT sietch-tabr DOT com
+license: MIT
+summary: Logrotate Compliance Profile
+version: 0.1.0
+supports:
+  - os-family: linux
